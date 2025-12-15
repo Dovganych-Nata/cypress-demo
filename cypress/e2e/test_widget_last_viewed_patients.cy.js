@@ -1,41 +1,39 @@
+describe("Last Viewed Patients Widget", () => {
 
-describe("Authenticated tests", () => {
+  const formatDate = (dateString) => {      
+    const date = new Date(dateString);
+  
+    const months = [
+      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+    ];
+  
+    const day = String(date.getUTCDate()).padStart(2, '0');
+    const month = months[date.getUTCMonth()];
+    const year = date.getUTCFullYear();
+  
+    return `${day}-${month}-${year}`;
+  };
+
   beforeEach(() => {
     cy.login();
   });
 
-  it("does something after login and verifies patient data", () => {
+  it("Widget contains viewed patients data", () => {
 
     cy.intercept('GET', '/fhir/rest/v1/fhir/Patient?identifier=*').as('getPatients');
 
     cy.wait('@getPatients', { timeout: 15000 }).then((interception) => {
+
       expect(interception.response.statusCode).to.eq(200);
 
       const responseBody = interception.response.body;
 
       const lastViewedPatientsCount = responseBody.total;
+
       cy.get('.widget-title').contains(` Last Viewed Patients (${lastViewedPatientsCount})`).should("be.visible");
 
-
-
       const patients = interception.response.body.entry;
-
-
-      const formatDate = (dateString) => {      
-        const date = new Date(dateString);
-      
-        const months = [
-          'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-          'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-        ];
-      
-        const day = String(date.getUTCDate()).padStart(2, '0');
-        const month = months[date.getUTCMonth()];
-        const year = date.getUTCFullYear();
-      
-        return `${day}-${month}-${year}`;
-      };
-      
 
       const result = patients.map(patient => {
         return {
@@ -53,7 +51,7 @@ describe("Authenticated tests", () => {
                 .filter(mrn => mrn.system === "MRN")
                 .map(mrn => mrn.value)[0]
         };
-    });
+      });
 
       cy.writeFile('cypress/fixtures/patients.json', result);
       console.log(result); 
@@ -67,6 +65,5 @@ describe("Authenticated tests", () => {
           .should('contain', `${patient.mrnValue}`)
       });
     });
-
   });
 });

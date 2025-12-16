@@ -30,6 +30,4 @@ Cypress.Commands.add("login", () => {
     cy.contains('Email').next().type(Cypress.env("USER_EMAIL"));
     cy.contains('Password').next().type(Cypress.env("USER_PASSWORD"));
     cy.contains('Sign In').click();
-  
-    // cy.url().should("not.include", "/login");
   });

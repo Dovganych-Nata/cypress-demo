@@ -11,7 +11,6 @@ module.exports = defineConfig({
     viewportWidth: 1280,
     viewportHeight: 720,
 
-    // Merge .env variables into Cypress
     env: {
       USER_EMAIL: process.env.CYPRESS_USER_EMAIL,
       USER_PASSWORD: process.env.CYPRESS_USER_PASSWORD

@@ -17,9 +17,7 @@ describe("Patient personal data", () => {
 
     // Open the first patient from the "Last Viewed Patients" widget
     cy.contains('Last Viewed Patients')
-      .parent()
-      .find('.widget-content')
-      .children()
+      .get('.patient-identity-container')
       .first()
       .click();
 
